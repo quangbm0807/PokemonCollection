@@ -20,6 +20,9 @@ export const PokemonCollection: React.FC = () => {
     useEffect(() => {
         fetchPokemon();
     }, []);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [selectedType]);
 
     const fetchPokemon = async (): Promise<void> => {
         try {
