@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Moon, Sun, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Pokemon } from './types';
+import { Search, Moon, Sun } from 'lucide-react';
+import { Pokemon } from './types'
 import clsx from 'clsx';
 import { getTypeColor } from '../utils/pokemonUtils';
 import Pagination from './Pagination';
+import PokemonModal from './PokemonModal';
 
 export const PokemonCollection: React.FC = () => {
     const [pokemon, setPokemon] = useState<Pokemon[]>([]);
@@ -100,7 +101,10 @@ export const PokemonCollection: React.FC = () => {
                 {/* Enhanced Search and Filter */}
                 <div className="flex flex-col md:flex-row gap-4 mb-8 animate-float">
                     <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Search className={clsx(
+                            'absolute left-3 top-1/2 transform -translate-y-1/2 z-10',
+                            darkMode ? 'text-white' : 'text-gray-800 '
+                        )} size={20} />
                         <input
                             type="text"
                             placeholder="Search Pokémon..."
@@ -202,95 +206,11 @@ export const PokemonCollection: React.FC = () => {
                 />
 
                 {/* Enhanced Pokemon Detail Modal */}
-                {selectedPokemon && (
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50
-                        animate-modal-fade-in">
-                        <div className={clsx(
-                            'max-w-2xl w-full rounded-lg p-6',
-                            'transform transition-all duration-300',
-                            'animate-modal-slide-up',
-                            darkMode ? 'bg-gray-800 text-white' : 'bg-white'
-                        )}>
-                            <div className="flex justify-between items-start mb-4">
-                                <h2 className="text-2xl font-bold capitalize bg-gradient-to-r from-purple-400 to-pink-600 
-                             bg-clip-text text-transparent">
-                                    {selectedPokemon.name}
-                                </h2>
-                                <button
-                                    onClick={() => setSelectedPokemon(null)}
-                                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
-                           transition-colors duration-300"
-                                >
-                                    ×
-                                </button>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="relative overflow-hidden rounded-lg">
-                                    <img
-                                        src={selectedPokemon.sprites.other['official-artwork'].front_default}
-                                        alt={selectedPokemon.name}
-                                        className="w-full object-contain transform transition-transform duration-500 hover:scale-110"
-                                    />
-                                </div>
-                                <div>
-                                    <div className="mb-4">
-                                        <h3 className="font-semibold mb-2">Types</h3>
-                                        <div className="flex flex-wrap gap-2">
-                                            {selectedPokemon.types.map((type) => (
-                                                <span
-                                                    key={type.type.name}
-                                                    className={clsx(
-                                                        'px-3 py-1 rounded-full text-sm',
-                                                        'transform transition-all duration-300 hover:scale-105',
-                                                        getTypeColor(type.type.name)
-                                                    )}
-                                                >
-                                                    {type.type.name}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <div className="mb-4">
-                                        <h3 className="font-semibold mb-2">Stats</h3>
-                                        {selectedPokemon.stats.map((stat) => (
-                                            <div key={stat.stat.name} className="mb-2">
-                                                <div className="flex justify-between mb-1">
-                                                    <span className="capitalize">{stat.stat.name.replace('-', ' ')}</span>
-                                                    <span>{stat.base_stat}</span>
-                                                </div>
-                                                <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
-                                                    <div
-                                                        className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full
-                                     transition-all duration-1000 ease-out"
-                                                        style={{
-                                                            width: `${(stat.base_stat / 255) * 100}%`,
-                                                            animation: 'statsGrow 1s ease-out'
-                                                        }}
-                                                    ></div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold mb-2">Abilities</h3>
-                                        <div className="flex flex-wrap gap-2">
-                                            {selectedPokemon.abilities.map((ability) => (
-                                                <span
-                                                    key={ability.ability.name}
-                                                    className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm
-                                   transform transition-all duration-300 hover:scale-105
-                                   hover:bg-purple-100 dark:hover:bg-gray-600"
-                                                >
-                                                    {ability.ability.name.replace('-', ' ')}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <PokemonModal
+                    selectedPokemon={selectedPokemon}
+                    setSelectedPokemon={setSelectedPokemon}
+                    darkMode={darkMode}
+                />
             </div>
         </div>
     );
